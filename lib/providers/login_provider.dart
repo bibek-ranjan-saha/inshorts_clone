@@ -26,6 +26,8 @@ class LoginProvider extends ChangeNotifier {
       sharedPreferences.setBool(SPConstants.isLoggedIn, true).then((value) {
         Provider.of<ProDTProvider>(context, listen: false)
             .setCategory(ProDtCategories.national, context);
+        showSnackBar(
+            context: context, text: "Logged in as ${emailController.text}");
         context.go(HomePage.routeName);
       });
     }

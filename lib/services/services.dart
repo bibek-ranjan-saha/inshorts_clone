@@ -11,11 +11,10 @@ class InShortsService {
   InShortsDioClient client = InShortsDioClient.instance;
 
   Future<InShortsData?> getNews(BuildContext context) async {
-    ProDTProvider provider = Provider.of<ProDTProvider>(context,listen: false);
+    ProDTProvider provider = Provider.of<ProDTProvider>(context, listen: false);
     Response response = await client.api
         .get("$baseUrl/news?category=${provider.selectedCategory.name}");
     InShortsData data = InShortsData.fromJson(response.data);
     return data;
   }
-
 }

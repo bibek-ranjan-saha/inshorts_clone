@@ -1,13 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/category_data.dart';
 
 class InShortsDBHelper {
-
   late Box box;
 
   InShortsDBHelper._() {

@@ -1,21 +1,10 @@
 import 'package:flutter/material.dart';
 
-void showSnackBar(
-    {required BuildContext context,
-    required String text,
-    bool isError = false}) {
+void showSnackBar({required BuildContext context, required String text}) {
   ScaffoldMessenger.of(context).clearSnackBars();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Row(
-        children: [
-          if (isError)
-            const Icon(Icons.error_outline_rounded, color: Colors.white),
-          Text("  $text"),
-        ],
-      ),
-      backgroundColor:
-          isError ? const Color(0xffFF5158) : Colors.blueGrey.shade800,
+      content: Text(text),
       behavior: SnackBarBehavior.floating,
     ),
   );

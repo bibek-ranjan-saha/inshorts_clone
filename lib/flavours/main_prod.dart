@@ -7,7 +7,6 @@ import 'package:prodt_test/services/bookmark_service.dart';
 
 import '../main_common.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {

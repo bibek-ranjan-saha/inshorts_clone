@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prodt_test/constants/string_constants.dart';
-import 'package:prodt_test/providers/login_provider.dart';
 import 'package:prodt_test/screens/login.dart';
-import 'package:prodt_test/screens/splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -32,8 +30,10 @@ class ProfilePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Email : $email",style: Theme.of(context).textTheme.titleLarge),
-                  Text("Email : $pwd",style: Theme.of(context).textTheme.titleLarge),
+                  Text("Email : $email",
+                      style: Theme.of(context).textTheme.titleLarge),
+                  Text("Email : $pwd",
+                      style: Theme.of(context).textTheme.titleLarge),
                   ElevatedButton.icon(
                     onPressed: () {
                       snapshot.data?.clear();

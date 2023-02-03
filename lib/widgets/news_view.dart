@@ -126,6 +126,10 @@ class _NewsViewState extends State<NewsView> {
                           if (!widget.isBookMarked)
                             IconButton(
                               onPressed: () {
+                                showSnackBar(
+                                    context: context,
+                                    text: "${news.title} has been bookmarked "
+                                        "will be available offline");
                                 InShortsDBHelper.instance.createBookMark(news);
                               },
                               icon: const Icon(Icons.bookmark_border),
@@ -136,12 +140,15 @@ class _NewsViewState extends State<NewsView> {
                                 InShortsDBHelper.instance
                                     .deleteBookMarkData(index)
                                     .whenComplete(
-                                      () => setState(
-                                        () {
-                                          widget.snapshot.removeAt(index);
-                                        },
-                                      ),
-                                    );
+                                  () {
+                                    showSnackBar(
+                                        context: context,
+                                        text: "${news.title} has been removed");
+                                    setState(() {
+                                      widget.snapshot.removeAt(index);
+                                    });
+                                  },
+                                );
                               },
                               icon: const Icon(Icons.bookmark_remove_rounded),
                             ),

@@ -16,7 +16,7 @@ class InShortsTransformer extends PageTransformer {
       return Opacity(
         opacity: 1.0 + position,
         child: Transform.translate(
-          offset:  Offset(0.0, -position * (info.height ?? 0)),
+          offset: Offset(0.0, -position * (info.height ?? 0)),
           child: Transform.scale(
             scale: scaleFactor,
             child: child,
