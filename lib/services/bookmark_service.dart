@@ -1,27 +1,56 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'dio_client.dart';
+import '../models/category_data.dart';
 
-class BookMarkProvider {
-  InShortsDioClient client = InShortsDioClient.instance;
+class InShortsDBHelper {
 
-  BookMarkProvider._() {
+  late Box box;
+
+  InShortsDBHelper._() {
     initialize();
   }
 
-  BookMarkProvider? _instance;
+  static InShortsDBHelper? _instance;
 
-  BookMarkProvider get instance => _instance ??= BookMarkProvider._();
+  static InShortsDBHelper get instance => _instance ??= InShortsDBHelper._();
 
   late SharedPreferences preferences;
 
-  void initialize() async {
-    preferences = await SharedPreferences.getInstance();
+  void initialize() {
+    // preferences = await SharedPreferences.getInstance();
+    box = Hive.box('cache');
   }
 
-  void createBookMark()
-  {
-
+  void createBookMark(Datum data) async {
+    var mapData = data.toJson();
+    box.add(mapData);
+    debugPrint("hello ${box.values}");
   }
 
+  Future<void> deleteBookMarkData(int index) async {
+    await box.deleteAt(index);
+  }
+
+  Future<List<Datum>> getAllBookmarks() async {
+    if (box.values.isEmpty) {
+      debugPrint("data is not teher");
+      return Future.value([]);
+    } else {
+      debugPrint("data is teher");
+      List<Datum> data = [];
+      box.toMap().values.forEach((element) {
+        data.add(Datum.fromJson(jsonDecode(jsonEncode(element))));
+      });
+      debugPrint(" here us report ${data}");
+      return data;
+    }
+  }
+
+  Future<void> cleanData() async {
+    await box.clear();
+  }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prodt_test/providers/prodt_provider.dart';
 import 'package:prodt_test/screens/home_page.dart';
 import 'package:prodt_test/utils/utils.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/string_constants.dart';
+import '../models/categories.dart';
 
 class LoginProvider extends ChangeNotifier {
   GlobalKey<FormState> loginFormKey = GlobalKey();
@@ -20,9 +23,11 @@ class LoginProvider extends ChangeNotifier {
           SPConstants.userEmailId, emailController.text);
       sharedPreferences.setString(
           SPConstants.userPassword, passwordController.text);
-      sharedPreferences
-          .setBool(SPConstants.isLoggedIn, true)
-          .then((value) => context.go(HomePage.routeName));
+      sharedPreferences.setBool(SPConstants.isLoggedIn, true).then((value) {
+        Provider.of<ProDTProvider>(context, listen: false)
+            .setCategory(ProDtCategories.national, context);
+        context.go(HomePage.routeName);
+      });
     }
   }
 

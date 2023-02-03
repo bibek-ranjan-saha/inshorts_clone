@@ -1,19 +1,14 @@
-import 'dart:math';
-
-import 'package:another_transformer_page_view/another_transformer_page_view.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prodt_test/providers/prodt_provider.dart';
 import 'package:prodt_test/providers/theme_provider.dart';
 import 'package:prodt_test/screens/bookmarked_page.dart';
 import 'package:prodt_test/screens/profile.dart';
-import 'package:prodt_test/screens/web_viewer.dart';
+import 'package:prodt_test/widgets/news_view.dart';
 import 'package:provider/provider.dart';
 
 import '../models/categories.dart';
 import '../models/category_data.dart';
-import '../widgets/all_transformers.dart';
 
 class HomePage extends StatelessWidget {
   static String routeName = "/home";
@@ -114,128 +109,63 @@ class HomePage extends StatelessWidget {
         ),
       ),
       body: FutureBuilder<InShortsData?>(
-          future: Provider.of<ProDTProvider>(context, listen: true).future,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.waiting) {
-              if (snapshot.hasData) {
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    Provider.of<ProDTProvider>(context, listen: false)
-                        .setCategory(null, context);
-                  },
-                  child: TransformerPageView(
-                      scrollDirection: Axis.vertical,
-                      itemCount: snapshot.data?.data.length ?? 0,
-                      loop: false,
-                      transformer:
-                          Provider.of<ProDTProvider>(context, listen: true)
-                                  .isDefault
-                              ? DeepthPageTransformer()
-                              : transformers[
-                                  new Random().nextInt(transformers.length)],
-                      itemBuilder: (context, index) {
-                        Datum news = snapshot.data!.data[index];
-                        return Card(
-                          margin: const EdgeInsets.all(8),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: GestureDetector(
-                              onTap: () async {
-                                context.pushNamed(InShortsWebViewer.routeName,
-                                    queryParams: {
-                                      "url": news.readMoreUrl ?? ""
-                                    });
-                                // Uri uri = Uri.parse(news.readMoreUrl ?? "");
-                                // if (await canLaunchUrl(uri)) {
-                                //   launchUrl(uri,
-                                //       mode: LaunchMode.inAppWebView,
-                                //       webOnlyWindowName: news.title);
-                                // }
-                              },
-                              child: Column(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: CachedNetworkImage(
-                                      imageUrl: news.imageUrl,
-                                      fit: BoxFit.cover,
-                                      height: screenSize.height * 0.42,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            news.title,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge,
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              color: Colors.grey),
-                                          child: Text(
-                                            news.time,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelMedium,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(child: Text(news.content)),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            "@ ${news.author}",
-                                            textAlign: TextAlign.end,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium,
-                                          ),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-
-                                          },
-                                          icon: const Icon(
-                                              Icons.bookmark_border),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                );
-              } else {
-                return const Center(
-                  child: Text("No data present"),
-                );
-              }
+        future: Provider.of<ProDTProvider>(context, listen: true).future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.waiting) {
+            if (snapshot.hasData) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  Provider.of<ProDTProvider>(context, listen: false)
+                      .setCategory(null, context);
+                },
+                child: NewsView(
+                  screenSize: screenSize,
+                  snapshot: snapshot.data?.data ?? [],
+                ),
+              );
             } else {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "No data present\nSorry 🥲",
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Provider.of<ProDTProvider>(context, listen: false)
+                            .setCategory(null, context);
+                      },
+                      icon: const Icon(Icons.refresh_rounded),
+                    )
+                  ],
+                ),
+              );
             }
-          }),
+          } else {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "loading data hang on...",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  )
+                ],
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }

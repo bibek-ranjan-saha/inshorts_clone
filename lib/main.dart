@@ -5,6 +5,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:prodt_test/providers/providers.dart';
 import 'package:prodt_test/providers/theme_provider.dart';
+import 'package:prodt_test/services/bookmark_service.dart';
 import 'package:prodt_test/utils/router.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ void main() async {
   await openHiveBox(
     'cache',
   );
+  InShortsDBHelper.instance.initialize();
   runApp(const MyApp());
 }
 
