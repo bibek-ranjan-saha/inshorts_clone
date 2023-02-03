@@ -45,6 +45,12 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void makeItNotAuto() async {
+    currentTheme = CrazyThemeMode.light;
+    _prefs.setString(THEME, currentTheme.name);
+    notifyListeners();
+  }
+
   initialize() async {
     _prefs = await SharedPreferences.getInstance();
     currentTheme =

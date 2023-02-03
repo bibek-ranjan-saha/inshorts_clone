@@ -1,3 +1,4 @@
+import 'package:prodt_test/models/categories.dart';
 import 'package:prodt_test/providers/login_provider.dart';
 import 'package:prodt_test/providers/prodt_provider.dart';
 import 'package:prodt_test/providers/theme_provider.dart';
