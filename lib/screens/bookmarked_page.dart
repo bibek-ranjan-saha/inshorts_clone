@@ -19,7 +19,6 @@ class BookMarkedNewsPage extends StatelessWidget {
       body: FutureBuilder<List<Datum>>(
         future: InShortsDBHelper.instance.getAllBookmarks(),
         builder: (context, snapshot) {
-          debugPrint("khgdfij ${snapshot}");
           return (snapshot.data?.isEmpty ?? true)
               ? const Center(
                   child: Text("You have not added bookmark to any news"),

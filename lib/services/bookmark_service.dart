@@ -28,7 +28,6 @@ class InShortsDBHelper {
   void createBookMark(Datum data) async {
     var mapData = data.toJson();
     box.add(mapData);
-    debugPrint("hello ${box.values}");
   }
 
   Future<void> deleteBookMarkData(int index) async {
@@ -37,15 +36,12 @@ class InShortsDBHelper {
 
   Future<List<Datum>> getAllBookmarks() async {
     if (box.values.isEmpty) {
-      debugPrint("data is not teher");
       return Future.value([]);
     } else {
-      debugPrint("data is teher");
       List<Datum> data = [];
       box.toMap().values.forEach((element) {
         data.add(Datum.fromJson(jsonDecode(jsonEncode(element))));
       });
-      debugPrint(" here us report ${data}");
       return data;
     }
   }

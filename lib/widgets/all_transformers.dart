@@ -4,6 +4,8 @@ import 'package:another_transformer_page_view/another_transformer_page_view.dart
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
 
+import 'inshorts_transformer.dart';
+
 final transformers = [
   AccordionTransformer(),
   ThreeDTransformer(),
@@ -11,6 +13,7 @@ final transformers = [
   ZoomOutPageTransformer(),
   DeepthPageTransformer(),
   ScaleAndFadeTransformer(),
+  InShortsTransformer()
 ];
 
 class AccordionTransformer extends PageTransformer {

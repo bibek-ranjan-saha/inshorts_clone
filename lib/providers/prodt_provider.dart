@@ -9,11 +9,11 @@ class ProDTProvider extends ChangeNotifier {
 
   InShortsService service = InShortsService();
 
-  bool _isDefault = false;
+  bool _isDefault = true;
+
   bool get isDefault => _isDefault;
 
-  void setIsDefault(bool newIsDefault)
-  {
+  void setIsDefault(bool newIsDefault) {
     _isDefault = newIsDefault;
     notifyListeners();
   }

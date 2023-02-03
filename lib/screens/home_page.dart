@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prodt_test/constants/string_constants.dart';
 import 'package:prodt_test/providers/prodt_provider.dart';
 import 'package:prodt_test/providers/theme_provider.dart';
 import 'package:prodt_test/screens/bookmarked_page.dart';
@@ -56,6 +57,32 @@ class HomePage extends StatelessWidget {
       drawer: Drawer(
         child: Column(
           children: [
+            SizedBox(
+              height: screenSize.height * 0.25,
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Expanded(
+                      child: Image.asset(
+                        AImages.logo,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "ProDT assignment by\nBIBEK RANJAN SAHA",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    )
+                  ],
+                ),
+              ),
+            ),
             ListTile(
               onTap: () {
                 context.pop();

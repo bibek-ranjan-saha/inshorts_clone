@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prodt_test/models/category_data.dart';
 import 'package:prodt_test/services/bookmark_service.dart';
+import 'package:prodt_test/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/prodt_provider.dart';
@@ -46,6 +47,13 @@ class _NewsViewState extends State<NewsView> {
               padding: const EdgeInsets.all(12.0),
               child: GestureDetector(
                 onTap: () async {
+                  if (news.readMoreUrl == null) {
+                    showSnackBar(
+                        context: context,
+                        text: "no web url "
+                            "present to navigate");
+                    return;
+                  }
                   context.pushNamed(InShortsWebViewer.routeName,
                       queryParams: {"url": news.readMoreUrl ?? ""});
                   // Uri uri = Uri.parse(news.readMoreUrl ?? "");
@@ -61,7 +69,18 @@ class _NewsViewState extends State<NewsView> {
                       borderRadius: BorderRadius.circular(12),
                       child: CachedNetworkImage(
                         imageUrl: news.imageUrl,
-                        fit: BoxFit.cover,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        placeholder: (context, url) =>
+                            const Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.broken_image_rounded),
                         height: widget.screenSize.height * 0.42,
                       ),
                     ),
