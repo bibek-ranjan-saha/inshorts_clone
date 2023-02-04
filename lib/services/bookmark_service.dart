@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:prodt_test/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/category_data.dart';
@@ -23,12 +25,41 @@ class InShortsDBHelper {
     box = Hive.box('cache');
   }
 
-  void createBookMark(Datum data) async {
-    var mapData = data.toJson();
-    box.add(mapData);
+  void createBookMark(Datum newNews, BuildContext context) async {
+    bool alreadyExists = false;
+    List<Datum> data = await getAllBookmarks();
+    for (Datum news in data) {
+      if (news.id == newNews.id) {
+        alreadyExists = true;
+      }
+    }
+    if (alreadyExists) {
+      if (context.mounted) {
+        showSnackBar(
+            context: context,
+            text:
+                "News is already bookmarked view it by going to my bookmarks");
+      }
+    } else {
+      var mapData = newNews.toJson();
+      box.add(mapData);
+      if (context.mounted) {
+        showSnackBar(
+            context: context,
+            text: "${newNews.title} has been bookmarked "
+                "will be available offline");
+      }
+    }
   }
 
-  Future<void> deleteBookMarkData(int index) async {
+  Future<void> deleteBookMarkData(String newsId) async {
+    int index = 0;
+    List<Datum> data = await getAllBookmarks();
+    for (int i = 0; i < data.length; i++) {
+      if (data[i].id == newsId) {
+        index = i;
+      }
+    }
     await box.deleteAt(index);
   }
 

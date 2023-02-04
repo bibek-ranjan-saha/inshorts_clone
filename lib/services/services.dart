@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:prodt_test/providers/prodt_provider.dart';
 import 'package:provider/provider.dart';
@@ -12,8 +13,9 @@ class InShortsService {
 
   Future<InShortsData?> getNews(BuildContext context) async {
     ProDTProvider provider = Provider.of<ProDTProvider>(context, listen: false);
-    Response response = await client.api
-        .get("$baseUrl/news?category=${provider.selectedCategory.name}");
+    Response response = await client.api.get(
+        "$baseUrl/news?category=${provider.selectedCategory.name}",
+        options: buildCacheOptions(const Duration(days: 7)));
     InShortsData data = InShortsData.fromJson(response.data);
     return data;
   }

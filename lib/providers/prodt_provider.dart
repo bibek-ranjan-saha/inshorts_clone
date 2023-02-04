@@ -1,3 +1,4 @@
+import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:flutter/material.dart';
 
 import '../models/categories.dart';
@@ -6,6 +7,9 @@ import '../services/services.dart';
 
 class ProDTProvider extends ChangeNotifier {
   ProDtCategories _selectedCategory = ProDtCategories.national;
+
+  IndexController homePageController = IndexController();
+  IndexController bookmarkedPageController = IndexController();
 
   InShortsService service = InShortsService();
 

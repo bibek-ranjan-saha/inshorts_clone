@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prodt_test/constants/string_constants.dart';
@@ -10,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../models/categories.dart';
 import '../models/category_data.dart';
+import '../widgets/all_transformers.dart';
 
 class HomePage extends StatelessWidget {
   static String routeName = "/home";
@@ -28,7 +32,10 @@ class HomePage extends StatelessWidget {
           return DropdownButton(
               borderRadius: BorderRadius.circular(8),
               underline: const SizedBox(),
-              icon: const SizedBox(),
+              icon: const Icon(Icons.arrow_circle_down_outlined),
+              isDense: true,
+              alignment: Alignment.center,
+              focusColor: Colors.transparent,
               value: provider.selectedCategory,
               items: ProDtCategories.values
                   .map(
@@ -145,9 +152,22 @@ class HomePage extends StatelessWidget {
                   Provider.of<ProDTProvider>(context, listen: false)
                       .setCategory(null, context);
                 },
-                child: NewsView(
-                  screenSize: screenSize,
-                  snapshot: snapshot.data?.data ?? [],
+                child: TransformerPageView(
+                  scrollDirection: Axis.vertical,
+                  itemCount: snapshot.data?.data.length ?? 0,
+                  loop: false,
+                  controller: Provider.of<ProDTProvider>(context, listen: true)
+                      .homePageController,
+                  transformer: Provider.of<ProDTProvider>(context, listen: true)
+                          .isDefault
+                      ? DeepthPageTransformer()
+                      : transformers[Random().nextInt(transformers.length)],
+                  itemBuilder: (context, index) {
+                    return NewsView(
+                      screenSize: screenSize,
+                      news: snapshot.data!.data[index],
+                    );
+                  },
                 ),
               );
             } else {

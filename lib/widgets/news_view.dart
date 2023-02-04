@@ -1,29 +1,27 @@
-import 'dart:math';
-
-import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prodt_test/models/category_data.dart';
 import 'package:prodt_test/services/bookmark_service.dart';
 import 'package:prodt_test/utils/utils.dart';
-import 'package:provider/provider.dart';
 
-import '../providers/prodt_provider.dart';
 import '../screens/web_viewer.dart';
-import 'all_transformers.dart';
 
 class NewsView extends StatefulWidget {
-  final List<Datum> snapshot;
+  final Datum news;
   final Size screenSize;
-  final bool isBookMarked;
+  final bool isViewingBookMarks;
+  bool isBookMarked;
+  final void Function()? onRemove;
 
-  const NewsView(
-      {Key? key,
-      required this.snapshot,
-      required this.screenSize,
-      this.isBookMarked = false})
-      : super(key: key);
+  NewsView({
+    Key? key,
+    required this.news,
+    required this.screenSize,
+    this.isBookMarked = false,
+    this.isViewingBookMarks = false,
+    this.onRemove,
+  }) : super(key: key);
 
   @override
   State<NewsView> createState() => _NewsViewState();
@@ -32,134 +30,134 @@ class NewsView extends StatefulWidget {
 class _NewsViewState extends State<NewsView> {
   @override
   Widget build(BuildContext context) {
-    return TransformerPageView(
-        scrollDirection: Axis.vertical,
-        itemCount: widget.snapshot.length ?? 0,
-        loop: false,
-        transformer: Provider.of<ProDTProvider>(context, listen: true).isDefault
-            ? DeepthPageTransformer()
-            : transformers[new Random().nextInt(transformers.length)],
-        itemBuilder: (context, index) {
-          Datum news = widget.snapshot[index];
-          return Card(
-            margin: const EdgeInsets.all(8),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: GestureDetector(
-                onTap: () async {
-                  if (news.readMoreUrl == null) {
-                    showSnackBar(
-                        context: context,
-                        text: "no web url "
-                            "present to navigate");
-                    return;
-                  }
-                  context.pushNamed(InShortsWebViewer.routeName,
-                      queryParams: {"url": news.readMoreUrl ?? ""});
-                  // Uri uri = Uri.parse(news.readMoreUrl ?? "");
-                  // if (await canLaunchUrl(uri)) {
-                  //   launchUrl(uri,
-                  //       mode: LaunchMode.inAppWebView,
-                  //       webOnlyWindowName: news.title);
-                  // }
-                },
-                child: Column(
+    return Card(
+      margin: const EdgeInsets.all(8),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: GestureDetector(
+          onTap: () async {
+            if (widget.news.readMoreUrl == null) {
+              showSnackBar(
+                  context: context,
+                  text: "no web url "
+                      "present to navigate");
+              return;
+            }
+            context.pushNamed(
+              InShortsWebViewer.routeName,
+              queryParams: {"url": widget.news.readMoreUrl ?? ""},
+            );
+          },
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  imageUrl: widget.news.imageUrl,
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.broken_image_rounded),
+                  height: widget.screenSize.height * 0.42,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: CachedNetworkImage(
-                        imageUrl: news.imageUrl,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        placeholder: (context, url) =>
-                            const Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.broken_image_rounded),
-                        height: widget.screenSize.height * 0.42,
+                    Expanded(
+                      child: Text(
+                        widget.news.title,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              news.title,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.grey),
-                            child: Text(
-                              news.time,
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(child: Text(news.content)),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              "@ ${news.author}",
-                              textAlign: TextAlign.end,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ),
-                          if (!widget.isBookMarked)
-                            IconButton(
-                              onPressed: () {
-                                showSnackBar(
-                                    context: context,
-                                    text: "${news.title} has been bookmarked "
-                                        "will be available offline");
-                                InShortsDBHelper.instance.createBookMark(news);
-                              },
-                              icon: const Icon(Icons.bookmark_border),
-                            ),
-                          if (widget.isBookMarked)
-                            IconButton(
-                              onPressed: () {
-                                InShortsDBHelper.instance
-                                    .deleteBookMarkData(index)
-                                    .whenComplete(
-                                  () {
-                                    showSnackBar(
-                                        context: context,
-                                        text: "${news.title} has been removed");
-                                    setState(() {
-                                      widget.snapshot.removeAt(index);
-                                    });
-                                  },
-                                );
-                              },
-                              icon: const Icon(Icons.bookmark_remove_rounded),
-                            ),
-                        ],
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.grey),
+                      child: Text(
+                        widget.news.time,
+                        style: Theme.of(context).textTheme.labelMedium,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          );
-        });
+              Expanded(child: Text(widget.news.content)),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "@ ${widget.news.author}",
+                          textAlign: TextAlign.end,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Text(
+                          widget.news.date,
+                          textAlign: TextAlign.end,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                    if (!widget.isBookMarked)
+                      IconButton(
+                        onPressed: () {
+                          InShortsDBHelper.instance
+                              .createBookMark(widget.news, context);
+                          setState(() {
+                            widget.isBookMarked = true;
+                          });
+                        },
+                        icon: const Icon(Icons.bookmark_border),
+                      ),
+                    if (widget.isBookMarked)
+                      IconButton(
+                        onPressed: () {
+                          InShortsDBHelper.instance
+                              .deleteBookMarkData(widget.news.id)
+                              .whenComplete(
+                            () {
+                              showSnackBar(
+                                  context: context,
+                                  text: "${widget.news.title} has been "
+                                      "removed");
+                              setState(() {
+                                widget.isBookMarked = false;
+                                if (widget.isViewingBookMarks) {
+                                  widget.onRemove!();
+                                }
+                              });
+                            },
+                          );
+                        },
+                        icon: const Icon(Icons.bookmark_remove_rounded),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

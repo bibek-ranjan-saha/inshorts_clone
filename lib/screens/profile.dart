@@ -32,7 +32,8 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   Text("Email : $email",
                       style: Theme.of(context).textTheme.titleLarge),
-                  Text("Email : $pwd",
+                  const SizedBox(height: 20),
+                  Text("Password : $pwd",
                       style: Theme.of(context).textTheme.titleLarge),
                   ElevatedButton.icon(
                     onPressed: () {
