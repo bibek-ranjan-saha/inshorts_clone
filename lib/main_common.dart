@@ -13,18 +13,18 @@ class MyApp extends StatelessWidget {
       providers: InShortsProvider.providers,
       builder: (context, widget) {
         return Consumer<ThemeProvider>(builder: (ctx, provider, child) {
-          return MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            title: 'proDt InShorts Clone',
-            themeMode: provider.themeMode,
-            theme: ThemeData(
-              useMaterial3: true,
-              primarySwatch: Colors.blue,
-            ),
-            darkTheme: ThemeData.dark(useMaterial3: true)
-                .copyWith(primaryColor: Colors.blue),
-            routerConfig: InShortsRouter.router,
-          );
+          // return MaterialApp.router(
+          //   debugShowCheckedModeBanner: false,
+          //   title: 'proDt InShorts Clone',
+          //   themeMode: provider.themeMode,
+          //   theme: ThemeData(
+          //     useMaterial3: true,
+          //     primarySwatch: Colors.blue,
+          //   ),
+          //   darkTheme: ThemeData.dark(useMaterial3: true)
+          //       .copyWith(primaryColor: Colors.blue),
+          //   routerConfig: InShortsRouter.router,
+          // );
         });
       },
     );
