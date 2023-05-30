@@ -4,6 +4,7 @@ on:
     branches:
       - master
 
+jobs:
   build_ios:
     name: Build Flutter (iOS)
     runs-on: macos-latest
