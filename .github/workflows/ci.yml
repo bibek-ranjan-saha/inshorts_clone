@@ -18,7 +18,7 @@ jobs:
           channel: "stable"
       - run: flutter clean
       - run: flutter pub get
-      - run: flutter build ios --release --no-codesign
+      - run: flutter build ios --release --no-codesign -t lib/flavours/main_prod.dart --flavor production --no-tree-shake-icons
 
   build_appbundle:
     name: Build Flutter (Android)
@@ -33,7 +33,7 @@ jobs:
           channel: "stable"
       - run: flutter clean
       - run: flutter pub get
-      - run: flutter build appbundle
+      - run: flutter build appbundle -t lib/flavours/main_prod.dart --flavor production --no-tree-shake-icons
 
   build_apk:
     name: Android Release build
@@ -48,4 +48,4 @@ jobs:
           channel: "stable"
       - run: flutter clean
       - run: flutter pub get
-      - run: flutter build apk --release
+      - run: flutter build apk --release -t lib/flavours/main_prod.dart --flavor production --no-tree-shake-icons
