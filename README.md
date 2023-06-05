@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://flutter.io/">
-    <img src="https://diegolaballos.com/files/images/flutter-icon.jpg" alt="Logo" width=72 height=72>
+    <img src="https://logowik.com/content/uploads/images/flutter5786.jpg" alt="Logo" width=72 height=72>
   </a>
 
 <h3 align="center">Inshorts Clone App</h3>
